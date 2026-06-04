@@ -177,7 +177,7 @@
   <section class="panel" id="quiz">
     <div class="card-box">
       <div id="quizLive">
-        <div class="counter" style="margin-bottom:6px">Pregunta <span id="qNow">1</span> de <span id="qTotal">10</span></div>
+        <div class="counter" style="margin-bottom:6px">Pregunta <span id="qNow">1</span> de <span id="qTotal">20</span></div>
         <div class="game-q" id="qText" style="margin-bottom:16px"></div>
         <div id="qOpts" style="display:flex;flex-direction:column;gap:10px"></div>
         <div class="game-fb" id="qFeedback" style="text-align:left"></div>
@@ -241,16 +241,26 @@ const PARTS = [
 ];
 
 const QUIZ = [
-  {q:"¿Qué organelo se considera el centro de control genético de la célula?",o:["El núcleo","La mitocondria","El ribosoma","El citoplasma"],a:0},
-  {q:"¿Qué organelo realiza la respiración aerobia y produce energía (ATP)?",o:["El aparato de Golgi","Las mitocondrias","El nucléolo","La membrana plasmática"],a:1},
-  {q:"¿Qué estructuras se encargan de sintetizar (armar) las proteínas?",o:["Los lisosomas","La cromatina","Los ribosomas","Los centriolos"],a:2},
-  {q:"El retículo endoplásmico con ribosomas adheridos y aspecto granular es el...",o:["RER (rugoso)","REL (liso)","Aparato de Golgi","Citoesqueleto"],a:0},
-  {q:"¿Qué modelo explica la estructura de la membrana plasmática?",o:["El modelo del ADN","El modelo del mosaico fluido","El modelo nuclear","El modelo de crestas"],a:1},
-  {q:"Cuando la cromatina se pliega y empaqueta, forma estructuras compactas llamadas...",o:["Nucléolos","Ribosomas","Cromosomas","Vesículas"],a:2},
-  {q:"¿Qué organelo recibe y modifica proteínas y lípidos del retículo, los reparte y forma lisosomas?",o:["El citoesqueleto","La envoltura nuclear","El centrosoma","El aparato de Golgi"],a:3},
-  {q:"El retículo endoplásmico liso (REL) está relacionado sobre todo con la síntesis de...",o:["Lípidos","ADN","Cromosomas","Ribosomas"],a:0},
-  {q:"¿Qué estructura limita el núcleo y posee entre 3,000 y 4,000 poros nucleares?",o:["La membrana plasmática","La envoltura nuclear","El nucleoplasma","La cromatina"],a:1},
-  {q:"¿Qué red de filamentos y túbulos da forma a la célula y ayuda al transporte interno?",o:["El nucléolo","El citoplasma","El citoesqueleto","El RER"],a:2}
+  {q:"¿Cuál es la diferencia clave entre el retículo endoplásmico rugoso (RER) y el liso (REL)?",o:["El RER tiene ribosomas adheridos y el REL no","El REL está dentro del núcleo y el RER no","El RER fabrica lípidos y el REL proteínas","El REL tiene dos membranas y el RER una"],a:0},
+  {q:"Una célula que produce y secreta MUCHAS proteínas, ¿qué organelo tendrá especialmente desarrollado?",o:["El retículo endoplásmico rugoso (RER)","El retículo endoplásmico liso (REL)","El centrosoma","El nucléolo"],a:0},
+  {q:"¿Quiénes propusieron el modelo del mosaico fluido y en qué año?",o:["Watson y Crick, 1953","Singer y Nicholson, 1972","Schleiden y Schwann, 1839","Golgi y Cajal, 1906"],a:1},
+  {q:"Durante la división celular, ¿qué estructura se origina del centrosoma para mover los cromosomas a los polos?",o:["La cromatina","El huso mitótico","Las crestas mitocondriales","Los poros nucleares"],a:1},
+  {q:"Los ribosomas ADHERIDOS al retículo endoplásmico fabrican sobre todo...",o:["Lípidos de la membrana","Proteínas de secreción o para membranas","ADN nuclear","Proteínas solo para la propia célula"],a:1},
+  {q:"En la mitocondria, ¿cómo se llaman los pliegues de la membrana interna?",o:["Cisternas","Dictiosomas","Crestas mitocondriales","Centriolos"],a:2},
+  {q:"¿Qué se encuentra dentro de la matriz mitocondrial?",o:["Solo agua y sales","Enzimas, ADN, ribosomas y ARNt","Histonas y cromatina","Fosfolípidos y colesterol"],a:1},
+  {q:"¿Cuál es el tamaño aproximado de las mitocondrias?",o:["0.5 a 1 μm","10 a 20 μm","1 a 5 mm","Menos de 0.01 μm"],a:0},
+  {q:"Además de sintetizar lípidos, el REL participa en la destoxificación, por ejemplo, degradando...",o:["Proteínas viejas","El alcohol y otras drogas","El ADN dañado","Los cromosomas"],a:1},
+  {q:"La cromatina está formada por ADN asociado a unas proteínas llamadas...",o:["Enzimas","Histonas","Ribosomas","Centriolos"],a:1},
+  {q:"En el aparato de Golgi, ¿cómo se llaman el lado de entrada y el de salida?",o:["Cis (entrada) y trans (salida)","Norte y sur","Interno y externo","Alfa y beta"],a:0},
+  {q:"Además de empacar y modificar moléculas, ¿qué organelos forma el aparato de Golgi?",o:["Los ribosomas","Las mitocondrias","Los lisosomas","Los centriolos"],a:2},
+  {q:"La función del nucléolo se relaciona principalmente con...",o:["La síntesis de ARNr y el ensamblaje de los ribosomas","La producción de energía (ATP)","El transporte de la célula","La destoxificación"],a:0},
+  {q:"¿Cuáles son las cuatro partes que componen el núcleo?",o:["Cresta, matriz, cis y trans","Envoltura nuclear, nucleoplasma, cromatina y nucléolo","Membrana, citoplasma, ribosoma y ADN","Microtúbulos, microfilamentos, poros y centriolos"],a:1},
+  {q:"¿Cuál de estas estructuras NO está rodeada por membrana?",o:["La mitocondria","El aparato de Golgi","Los ribosomas","El núcleo"],a:2},
+  {q:"¿Cuáles son los tres componentes del citoesqueleto?",o:["Cis, trans y matriz","Microtúbulos, microfilamentos y filamentos intermedios","Cromatina, histonas y ADN","Núcleo, nucléolo y nucleoplasma"],a:1},
+  {q:"La membrana plasmática se describe como una barrera...",o:["Rígida e impermeable","Selectiva y semipermeable","Totalmente permeable","Sin proteínas"],a:1},
+  {q:"Aproximadamente, ¿qué porcentaje del citoplasma es agua?",o:["25%","50%","75%","99%"],a:2},
+  {q:"La membrana externa de la envoltura nuclear se continúa con la de...",o:["El retículo endoplásmico","La mitocondria","El aparato de Golgi","El citoesqueleto"],a:0},
+  {q:"Si una célula necesita producir más energía, ¿qué organelo esperarías encontrar en mayor cantidad?",o:["Las mitocondrias","Los lisosomas","El nucléolo","El centrosoma"],a:0}
 ];
 
 document.querySelectorAll('.tab').forEach(btn=>{
@@ -375,30 +385,36 @@ function finishGame(){
 const gameTemplate=document.getElementById('gameLive').innerHTML;
 startGame();
 
-let qi=0,score=0,answered=false;
+let qOrder=[], qi=0, score=0, answered=false, curCorrect=0;
 const cheers=["¡Excelente! 🌟","¡Muy bien! 💜","¡Correctísimo! 🎉","¡Lo dominas! 🔥","¡Genial! ✨"];
+function qShuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startQuiz(){ qOrder=qShuffle(QUIZ.map((_,i)=>i)); qi=0; score=0; renderQ(); }
 function renderQ(){
-  answered=false;const item=QUIZ[qi];
+  answered=false;
+  const item=QUIZ[qOrder[qi]];
   qNow.textContent=qi+1; qTotal.textContent=QUIZ.length; qText.textContent=item.q;
   qScore.textContent=score; qFeedback.textContent=""; qFeedback.className="game-fb"; qFeedback.style.textAlign="left";
   qNext.disabled=true; qNext.textContent=qi===QUIZ.length-1?"Ver resultado 🏁":"Siguiente →";
   qOpts.innerHTML="";
-  item.o.forEach((txt,idx)=>{
+  const correctText=item.o[item.a];
+  const opts=qShuffle(item.o.slice());
+  curCorrect=opts.indexOf(correctText);
+  opts.forEach((txt,idx)=>{
     const b=document.createElement('button');
     b.style.cssText="text-align:left;cursor:pointer;border:2px solid #eed9ea;background:#fff;border-radius:14px;padding:13px 16px;font-family:Nunito;font-weight:700;font-size:1rem;color:var(--ink);transition:.1s";
     b.textContent=txt;
-    b.addEventListener('click',()=>chooseQ(idx,b));
+    b.addEventListener('click',()=>chooseQ(idx,b,correctText));
     qOpts.appendChild(b);
   });
 }
-function chooseQ(idx,btn){
-  if(answered)return;answered=true;const item=QUIZ[qi];
+function chooseQ(idx,btn,correctText){
+  if(answered)return;answered=true;
   const opts=qOpts.querySelectorAll('button');opts.forEach(o=>o.disabled=true);
-  if(idx===item.a){btn.style.background="#e4f7ec";btn.style.borderColor="var(--teal)";btn.style.color="#0e6b5c";
+  if(idx===curCorrect){btn.style.background="#e4f7ec";btn.style.borderColor="var(--teal)";btn.style.color="#0e6b5c";
     score++;qScore.textContent=score;qFeedback.textContent=cheers[Math.floor(Math.random()*cheers.length)];qFeedback.className="game-fb good";}
   else{btn.style.background="#fde7e7";btn.style.borderColor="#d9534f";btn.style.color="#a32a26";
-    opts[item.a].style.background="#e4f7ec";opts[item.a].style.borderColor="var(--teal)";opts[item.a].style.color="#0e6b5c";
-    qFeedback.textContent="Casi 💛 La correcta era: "+item.o[item.a];qFeedback.className="game-fb bad";}
+    opts[curCorrect].style.background="#e4f7ec";opts[curCorrect].style.borderColor="var(--teal)";opts[curCorrect].style.color="#0e6b5c";
+    qFeedback.textContent="Casi 💛 La correcta era: "+correctText;qFeedback.className="game-fb bad";}
   qFeedback.style.textAlign="left";qNext.disabled=false;
 }
 qNext.addEventListener('click',()=>{if(qi<QUIZ.length-1){qi++;renderQ();}else{showQResult();}});
@@ -406,16 +422,17 @@ function showQResult(){
   const pct=score/QUIZ.length;
   const stars=pct>=0.9?"⭐⭐⭐":pct>=0.6?"⭐⭐":pct>0?"⭐":"";
   const big=pct>=0.9?"🏆":pct>=0.6?"🎉":"🌱";
-  const msg=pct>=0.9?"¡Te sabes las funciones de memoria! Lista para el examen."
-        :pct>=0.6?"¡Muy bien! Repasa las tarjetas de lo que falló y quedará perfecto."
-        :"¡Buen intento! Vuelve a las tarjetas un ratito y repite el quiz: vas a mejorar muchísimo.";
+  const msg=pct>=0.9?"¡Nivel experta! Dominas el tema a fondo. 🤩"
+        :pct>=0.7?"¡Muy bien! Ya casi nivel experta; repasa lo que falló."
+        :pct>=0.5?"¡Vas bien! Vuelve al Mapa y las Tarjetas y sube tu marca."
+        :"¡Buen intento! Repasa con calma el Mapa y las Tarjetas, y vuelve a intentarlo.";
   quizLive.innerHTML='<div class="result"><div class="big">'+big+'</div><div class="stars">'+stars+'</div>'+
     '<h2>'+score+' / '+QUIZ.length+'</h2><p>'+msg+'</p>'+
     '<button class="nav-btn" id="qAgain">🔄 Intentar de nuevo</button></div>';
-  document.getElementById('qAgain').addEventListener('click',()=>{qi=0;score=0;quizLive.innerHTML=quizTemplate;bindQ();renderQ();});
+  document.getElementById('qAgain').addEventListener('click',()=>{quizLive.innerHTML=quizTemplate;bindQ();startQuiz();});
 }
 const quizLive=document.getElementById('quizLive');
 const quizTemplate=quizLive.innerHTML;
 function bindQ(){document.getElementById('qNext').addEventListener('click',()=>{if(qi<QUIZ.length-1){qi++;renderQ();}else{showQResult();}});}
-renderQ();
+startQuiz();
 </script>
