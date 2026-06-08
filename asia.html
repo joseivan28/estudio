@@ -167,7 +167,7 @@
 
   <section class="panel" id="quiz">
     <div class="card-box">
-      <div id="quizLive">
+      <div id="quizMain">
         <div class="counter" style="margin-bottom:6px">Pregunta <span id="qNow">1</span> de <span id="qTotal">20</span></div>
         <div class="q-text" id="qText"></div>
         <div id="qOpts" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -177,6 +177,7 @@
           <button class="nav-btn" id="qNext" disabled>Siguiente →</button>
         </div>
       </div>
+      <div id="quizResult" style="display:none"></div>
     </div>
   </section>
 
@@ -228,7 +229,7 @@ function choroTrace(){
   return { type:'choropleth', locationmode:'ISO-3',
     locations:COUNTRIES.map(c=>c.iso), z:COUNTRIES.map(()=>1),
     colorscale:[[0,'#bcd9f2'],[1,'#bcd9f2']], showscale:false,
-    marker:{line:{color:'#ffffff',width:1}}, hoverinfo:'skip' };
+    marker:{line:{color:'#ffffff',width:1}}, hoverinfo:'none' };
 }
 function pinTrace(showName){
   return { type:'scattergeo', mode:'markers+text',
@@ -238,7 +239,7 @@ function pinTrace(showName){
     marker:{size:21, color:COUNTRIES.map(()=> '#1f6fb2'), line:{color:'#fff',width:2}},
     customdata:COUNTRIES.map((c,i)=>i),
     hovertext:COUNTRIES.map(c=>c.name),
-    hoverinfo: showName ? 'text' : 'skip' };
+    hoverinfo: showName ? 'text' : 'none' };
 }
 const PCONF={responsive:true, displayModeBar:false, scrollZoom:false, doubleClick:false};
 
@@ -253,8 +254,9 @@ function showInfo(i){
 function initStudy(){
   Plotly.newPlot('mapStudy', [choroTrace(), pinTrace(true)], geoLayout(), PCONF).then(gd=>{
     gd.on('plotly_click', e=>{
+      if(!e || !e.points || !e.points.length) return;
       const p=e.points[0]; let idx=-1;
-      if(p.data.type==='scattergeo' && p.customdata!==undefined) idx=p.customdata;
+      if(p.data && p.data.type==='scattergeo' && p.customdata!==undefined) idx=p.customdata;
       else if(p.location){ idx=COUNTRIES.findIndex(c=>c.iso===p.location); }
       if(idx>=0) showInfo(idx);
     });
@@ -289,8 +291,9 @@ function initGame(){
   Plotly.newPlot('mapGame', [choroTrace(), pinTrace(false)], geoLayout(), PCONF).then(gd=>{
     gameGd=gd;
     gd.on('plotly_click', e=>{
+      if(!e || !e.points || !e.points.length) return;
       const p=e.points[0]; let idx=-1;
-      if(p.data.type==='scattergeo' && p.customdata!==undefined) idx=p.customdata;
+      if(p.data && p.data.type==='scattergeo' && p.customdata!==undefined) idx=p.customdata;
       else if(p.location){ idx=COUNTRIES.findIndex(c=>c.iso===p.location); }
       if(idx>=0) onPick(idx);
     });
@@ -358,31 +361,43 @@ function buildQuiz(){
 }
 let QQ=[], qi=0, score=0, answered=false, curCorrect=0;
 const cheers=["¡Excelente! 🌟","¡Muy bien! 💙","¡Correctísimo! 🎉","¡Lo dominas! 🔥","¡Genial! ✨"];
-function startQuiz(){ QQ=buildQuiz(); qi=0; score=0; renderQ(); }
+const qMain=document.getElementById('quizMain');
+const qResult=document.getElementById('quizResult');
+const qNextBtn=document.getElementById('qNext');
+function startQuiz(){
+  QQ=buildQuiz(); qi=0; score=0;
+  qResult.style.display='none'; qMain.style.display='block';
+  renderQ();
+}
 function renderQ(){
   answered=false; const item=QQ[qi];
-  qNow.textContent=qi+1; qTotal.textContent=QQ.length; qText.textContent=item.q;
-  qScore.textContent=score; qFeedback.textContent=""; qFeedback.className="game-fb"; qFeedback.style.textAlign="left";
-  qNext.disabled=true; qNext.textContent=qi===QQ.length-1?"Ver resultado 🏁":"Siguiente →";
-  qOpts.innerHTML="";
+  document.getElementById('qNow').textContent=qi+1;
+  document.getElementById('qTotal').textContent=QQ.length;
+  document.getElementById('qText').textContent=item.q;
+  document.getElementById('qScore').textContent=score;
+  const fb=document.getElementById('qFeedback'); fb.textContent=""; fb.className="game-fb"; fb.style.textAlign="left";
+  qNextBtn.disabled=true; qNextBtn.textContent=qi===QQ.length-1?"Ver resultado 🏁":"Siguiente →";
+  const box=document.getElementById('qOpts'); box.innerHTML="";
   curCorrect=item.opts.indexOf(item.correct);
   item.opts.forEach((txt,idx)=>{
     const b=document.createElement('button'); b.className="opt"; b.textContent=txt;
     b.addEventListener('click',()=>chooseQ(idx,b,item.correct));
-    qOpts.appendChild(b);
+    box.appendChild(b);
   });
 }
 function chooseQ(idx,btn,correctText){
   if(answered)return; answered=true;
-  const opts=qOpts.querySelectorAll('button'); opts.forEach(o=>o.disabled=true);
+  const opts=document.getElementById('qOpts').querySelectorAll('button'); opts.forEach(o=>o.disabled=true);
+  const fb=document.getElementById('qFeedback');
   if(idx===curCorrect){btn.style.background="#e4f7ec";btn.style.borderColor="var(--teal)";btn.style.color="#0e6b5c";
-    score++;qScore.textContent=score;qFeedback.textContent=cheers[Math.floor(Math.random()*cheers.length)];qFeedback.className="game-fb good";}
+    score++;document.getElementById('qScore').textContent=score;
+    fb.textContent=cheers[Math.floor(Math.random()*cheers.length)];fb.className="game-fb good";}
   else{btn.style.background="#fde7e7";btn.style.borderColor="#d9534f";btn.style.color="#a32a26";
     opts[curCorrect].style.background="#e4f7ec";opts[curCorrect].style.borderColor="var(--teal)";opts[curCorrect].style.color="#0e6b5c";
-    qFeedback.textContent="Casi 💛 La correcta era: "+correctText;qFeedback.className="game-fb bad";}
-  qFeedback.style.textAlign="left"; qNext.disabled=false;
+    fb.textContent="Casi 💛 La correcta era: "+correctText;fb.className="game-fb bad";}
+  fb.style.textAlign="left"; qNextBtn.disabled=false;
 }
-qNext.addEventListener('click',()=>{if(qi<QQ.length-1){qi++;renderQ();}else{showQResult();}});
+qNextBtn.addEventListener('click',()=>{ if(answered){ if(qi<QQ.length-1){qi++;renderQ();}else{showQResult();} } });
 function showQResult(){
   const pct=score/QQ.length;
   const stars=pct>=0.9?"⭐⭐⭐":pct>=0.6?"⭐⭐":pct>0?"⭐":"";
@@ -391,14 +406,13 @@ function showQResult(){
         :pct>=0.7?"¡Muy bien! Ya casi nivel experta; repasa lo que falló."
         :pct>=0.5?"¡Vas bien! Vuelve a las Tarjetas y sube tu marca."
         :"¡Buen intento! Repasa con calma las Tarjetas y el Mapa, y vuelve a intentarlo.";
-  quizLive.innerHTML='<div class="result"><div class="big">'+big+'</div><div class="stars">'+stars+'</div>'+
+  qMain.style.display='none';
+  qResult.style.display='block';
+  qResult.innerHTML='<div class="result"><div class="big">'+big+'</div><div class="stars">'+stars+'</div>'+
     '<h2>'+score+' / '+QQ.length+'</h2><p>'+msg+'</p>'+
     '<button class="nav-btn" id="qAgain">🔄 Intentar de nuevo</button></div>';
-  document.getElementById('qAgain').addEventListener('click',()=>{quizLive.innerHTML=quizTemplate;bindQ();startQuiz();});
+  document.getElementById('qAgain').addEventListener('click',startQuiz);
 }
-const quizLive=document.getElementById('quizLive');
-const quizTemplate=quizLive.innerHTML;
-function bindQ(){document.getElementById('qNext').addEventListener('click',()=>{if(qi<QQ.length-1){qi++;renderQ();}else{showQResult();}});}
 startQuiz();
 
 /* ---------- init maps when Plotly is ready ---------- */
