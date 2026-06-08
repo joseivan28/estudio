@@ -192,9 +192,9 @@ const COUNTRIES = [
   {n:5, name:"Corea del Sur",   cap:"Seúl",     flag:"🇰🇷", iso:"KOR", lat:36.4, lon:127.9},
   {n:6, name:"Emiratos Árabes Unidos", cap:"Abu Dabi", flag:"🇦🇪", iso:"ARE", lat:24.0, lon:54.3},
   {n:7, name:"Irán",       cap:"Teherán",  flag:"🇮🇷", iso:"IRN", lat:32.5, lon:53.7},
-  {n:8, name:"Israel",     cap:"Jerusalén",flag:"🇮🇱", iso:"ISR", lat:31.4, lon:35.0},
+  {n:8, name:"Israel",     cap:"Jerusalén",flag:"🇮🇱", iso:"ISR", lat:30.5, lon:34.6},
   {n:9, name:"Japón",      cap:"Tokio",    flag:"🇯🇵", iso:"JPN", lat:36.5, lon:138.5},
-  {n:10,name:"Jordania",   cap:"Amán",     flag:"🇯🇴", iso:"JOR", lat:31.2, lon:36.6}
+  {n:10,name:"Jordania",   cap:"Amán",     flag:"🇯🇴", iso:"JOR", lat:31.9, lon:37.4}
 ];
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -215,7 +215,8 @@ function geoLayout(){
   return {
     margin:{l:0,r:0,t:0,b:0}, height:430, dragmode:false,
     paper_bgcolor:'rgba(0,0,0,0)',
-    geo:{ scope:'asia', projection:{type:'mercator'},
+    geo:{ projection:{type:'mercator'},
+      lonaxis:{range:[30,148]}, lataxis:{range:[13,49]},
       showland:true, landcolor:'#f4ead9',
       showocean:true, oceancolor:'#d7eef6',
       showcountries:true, countrycolor:'#cdbfa9',
@@ -233,8 +234,8 @@ function pinTrace(showName){
   return { type:'scattergeo', mode:'markers+text',
     lon:COUNTRIES.map(c=>c.lon), lat:COUNTRIES.map(c=>c.lat),
     text:COUNTRIES.map(c=>String(c.n)),
-    textfont:{color:'#ffffff', size:12, family:'Fredoka'},
-    marker:{size:24, color:COUNTRIES.map(()=> '#1f6fb2'), line:{color:'#fff',width:2}},
+    textfont:{color:'#ffffff', size:11, family:'Fredoka'},
+    marker:{size:21, color:COUNTRIES.map(()=> '#1f6fb2'), line:{color:'#fff',width:2}},
     customdata:COUNTRIES.map((c,i)=>i),
     hovertext:COUNTRIES.map(c=>c.name),
     hoverinfo: showName ? 'text' : 'skip' };
