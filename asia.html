@@ -1,0 +1,409 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capitales y mapa de Asia — Repaso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  :root{
+    --ink:#23324a; --blue:#1f6fb2; --blue-deep:#114a7a; --teal:#1d9b8a;
+    --gold:#f2a900; --gold-deep:#e07b00; --magenta:#9b2d8f;
+    --cream:#f3f8fc; --paper:#ffffff;
+    --shadow:0 10px 30px -12px rgba(20,60,100,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;color:var(--ink);
+    background:
+      radial-gradient(1100px 560px at 82% -8%, #cfeafe 0%, transparent 55%),
+      radial-gradient(900px 500px at -10% 18%, #d8f3ee 0%, transparent 50%),
+      var(--cream);
+    min-height:100vh;padding:18px 14px 60px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto}
+  h1,h2,h3,.fred{font-family:'Fredoka',sans-serif}
+  header{text-align:center;margin-bottom:18px}
+  .badge{display:inline-block;background:var(--blue);color:#fff;font-family:'Fredoka';font-weight:600;
+    font-size:.8rem;letter-spacing:.5px;padding:6px 16px;border-radius:999px;text-transform:uppercase;
+    box-shadow:var(--shadow);transform:rotate(-2deg)}
+  h1{font-size:clamp(2rem,7vw,3rem);font-weight:700;line-height:1.04;margin:14px 0 6px;color:var(--blue-deep);
+    text-shadow:2px 3px 0 #cfe7fb}
+  .sub{color:#3f5d7e;font-weight:700;font-size:1.02rem}
+  .pep{margin:10px auto 0;max-width:580px;color:#3f5d7e;font-weight:600;background:#fff;
+    border:2px dashed var(--gold);border-radius:16px;padding:10px 14px;font-size:.95rem}
+  .pep b{color:var(--gold-deep)}
+
+  .tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 18px}
+  .tab{cursor:pointer;border:none;font-family:'Fredoka';font-weight:600;font-size:.98rem;padding:10px 16px;
+    border-radius:14px;background:#fff;color:var(--blue);box-shadow:0 4px 0 #cfe1f0;transition:transform .12s}
+  .tab:hover{transform:translateY(-2px)}
+  .tab.active{background:var(--blue);color:#fff;box-shadow:0 4px 0 #114a7a}
+  .panel{display:none;animation:fade .35s ease}
+  .panel.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .card-box{background:var(--paper);border-radius:22px;padding:16px;box-shadow:var(--shadow);border:1px solid #e3eef7}
+  .mapwrap{width:100%;border-radius:14px;overflow:hidden;background:#d7eef6}
+  .mapdiv{width:100%;height:430px}
+  .infopanel{margin-top:14px;background:linear-gradient(150deg,#fffaf0,#fff);border:2px solid var(--gold);
+    border-radius:16px;padding:14px 16px;min-height:80px}
+  .infopanel.empty{display:flex;align-items:center;justify-content:center;color:#9fb4c8;font-weight:700;
+    text-align:center;border-style:dashed;border-color:#d4e4f0}
+  .infopanel h3{color:var(--gold-deep);font-size:1.35rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .infopanel .cap{font-size:1.05rem;font-weight:800;color:var(--blue-deep)}
+  .infopanel .cap b{color:var(--gold-deep)}
+  .legend{text-align:center;font-size:.86rem;color:#6b86a3;font-weight:600;margin-top:10px}
+
+  .fc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .counter{font-family:'Fredoka';font-weight:600;color:var(--blue);font-size:1.05rem}
+  .progress{flex:1;min-width:140px;height:12px;background:#e3eef7;border-radius:999px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--blue));transition:width .3s}
+  .scene{perspective:1400px}
+  .flip{position:relative;width:100%;min-height:280px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.8,.3,1)}
+  .flip.is-flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;padding:24px;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;box-shadow:var(--shadow)}
+  .front{background:linear-gradient(150deg,#ffffff,#eef6fd);border:2px solid #cfe3f3}
+  .flag{font-size:4rem;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.12))}
+  .front h2{font-size:clamp(1.5rem,5.5vw,2.1rem);color:var(--blue-deep)}
+  .tap{color:#8aa3bd;font-weight:700;font-size:.9rem}
+  .back{background:linear-gradient(150deg,#fffaf0,#fff);border:2px solid var(--gold);transform:rotateY(180deg)}
+  .back .lbl{color:#9a7a3a;font-weight:800;font-size:.95rem;letter-spacing:.5px;text-transform:uppercase}
+  .back .bigcap{font-family:'Fredoka';font-weight:600;color:var(--gold-deep);font-size:clamp(1.8rem,7vw,2.6rem)}
+  .back .of{color:#3f5d7e;font-weight:700}
+  .fc-nav,.fc-where{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .nav-btn{cursor:pointer;border:none;font-family:'Fredoka';font-weight:600;font-size:1rem;padding:11px 22px;
+    border-radius:14px;background:var(--teal);color:#fff;box-shadow:0 4px 0 #136a5e;transition:transform .12s}
+  .nav-btn:hover{transform:translateY(-2px)}
+  .nav-btn.ghost{background:#fff;color:var(--teal);box-shadow:0 4px 0 #cfeae5}
+  .nav-btn:disabled{opacity:.45;cursor:default;transform:none}
+
+  .game-top{text-align:center;margin-bottom:10px}
+  .game-q{font-family:'Fredoka';font-weight:500;font-size:1.18rem;color:var(--ink)}
+  .game-q b{color:var(--blue-deep);font-weight:600}
+  .game-stats{display:flex;justify-content:center;gap:18px;margin-top:6px;font-weight:800;color:#3f5d7e;font-size:.92rem}
+  .game-fb{text-align:center;font-weight:800;min-height:22px;margin-top:10px}
+  .game-fb.good{color:var(--teal)} .game-fb.bad{color:#c0392b}
+
+  .q-text{font-family:'Fredoka';font-weight:500;font-size:1.25rem;color:var(--ink);margin-bottom:16px;line-height:1.25}
+  .opt{text-align:left;cursor:pointer;border:2px solid #d8e6f2;background:#fff;border-radius:14px;padding:13px 16px;
+    font-family:'Nunito';font-weight:700;font-size:1rem;color:var(--ink);transition:.1s;width:100%}
+  .opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--blue)}
+
+  .result{text-align:center;padding:14px 6px}
+  .result .big{font-size:3.6rem}
+  .result h2{color:var(--blue-deep);font-size:1.9rem;margin:6px 0}
+  .result p{font-weight:700;color:#3f5d7e;font-size:1.05rem;margin-bottom:16px}
+  .stars{font-size:1.9rem;letter-spacing:4px;margin:6px 0}
+  footer{text-align:center;color:#8aa3bd;font-weight:600;font-size:.82rem;margin-top:26px}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="badge">🌏 Repaso de geografía</span>
+    <h1>Capitales y mapa<br>de Asia</h1>
+    <p class="sub">¡A conquistar el mapa, Regina! 💪</p>
+    <p class="pep">Toca cada país para ver <b>dónde está</b> y su <b>capital</b>, repasa con tarjetas, juega a ubicarlos y demuéstralo en el quiz. 🗺️</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="mapa">🗺️ Mapa</button>
+    <button class="tab" data-tab="tarjetas">🃏 Tarjetas</button>
+    <button class="tab" data-tab="identifica">📍 Ubícalo</button>
+    <button class="tab" data-tab="quiz">❓ Quiz</button>
+  </div>
+
+  <section class="panel show" id="mapa">
+    <div class="card-box">
+      <div class="mapwrap"><div class="mapdiv" id="mapStudy"></div></div>
+      <div class="infopanel empty" id="mapInfo">👆 Toca un punto del mapa para ver el país y su capital.</div>
+    </div>
+  </section>
+
+  <section class="panel" id="tarjetas">
+    <div class="card-box">
+      <div class="fc-top">
+        <span class="counter"><span id="fcNow">1</span> / <span id="fcTotal">10</span></span>
+        <div class="progress"><i id="fcBar"></i></div>
+      </div>
+      <div class="scene">
+        <div class="flip" id="flip">
+          <div class="face front">
+            <div class="flag" id="fcFlag">🇦🇫</div>
+            <h2 id="fcName">Afganistán</h2>
+            <span class="tap">👆 Toca para ver la capital</span>
+          </div>
+          <div class="face back">
+            <span class="lbl">Capital de <span id="fcBackName">Afganistán</span></span>
+            <div class="bigcap" id="fcCap">Kabul</div>
+            <span class="flag" id="fcFlag2" style="font-size:2.4rem">🇦🇫</span>
+          </div>
+        </div>
+      </div>
+      <div class="fc-nav">
+        <button class="nav-btn ghost" id="fcPrev">← Anterior</button>
+        <button class="nav-btn" id="fcNext">Siguiente →</button>
+      </div>
+      <div class="fc-where">
+        <button class="nav-btn ghost" id="fcShow">📍 ¿Dónde está? Verlo en el mapa</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="identifica">
+    <div class="card-box" id="gameBox">
+      <div id="gameLive">
+        <div class="game-top">
+          <p class="game-q">Toca en el mapa: <b id="gameTarget">—</b></p>
+          <div class="game-stats">
+            <span>✅ <span id="gSolved">0</span>/10</span>
+            <span>🎯 A la primera: <span id="gFirst">0</span></span>
+          </div>
+        </div>
+        <div class="mapwrap"><div class="mapdiv" id="mapGame"></div></div>
+        <p class="game-fb" id="gameFb">Toca el país que se te pide. ¡Tú puedes! 🔎</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="quiz">
+    <div class="card-box">
+      <div id="quizLive">
+        <div class="counter" style="margin-bottom:6px">Pregunta <span id="qNow">1</span> de <span id="qTotal">20</span></div>
+        <div class="q-text" id="qText"></div>
+        <div id="qOpts" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div class="game-fb" id="qFeedback" style="text-align:left"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;flex-wrap:wrap">
+          <span style="font-family:'Fredoka';font-weight:600;color:var(--gold-deep)">Aciertos: <span id="qScore">0</span></span>
+          <button class="nav-btn" id="qNext" disabled>Siguiente →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Hecho con cariño para estudiar 💙 · El mapa se carga por internet</footer>
+</div>
+
+<script>
+const COUNTRIES = [
+  {n:1, name:"Afganistán", cap:"Kabul",    flag:"🇦🇫", iso:"AFG", lat:34.5, lon:66.5},
+  {n:2, name:"Catar",      cap:"Doha",     flag:"🇶🇦", iso:"QAT", lat:25.3, lon:51.2},
+  {n:3, name:"China",      cap:"Pekín",    flag:"🇨🇳", iso:"CHN", lat:35.5, lon:103},
+  {n:4, name:"Corea del Norte", cap:"Pionyang", flag:"🇰🇵", iso:"PRK", lat:40.3, lon:127},
+  {n:5, name:"Corea del Sur",   cap:"Seúl",     flag:"🇰🇷", iso:"KOR", lat:36.4, lon:127.9},
+  {n:6, name:"Emiratos Árabes Unidos", cap:"Abu Dabi", flag:"🇦🇪", iso:"ARE", lat:24.0, lon:54.3},
+  {n:7, name:"Irán",       cap:"Teherán",  flag:"🇮🇷", iso:"IRN", lat:32.5, lon:53.7},
+  {n:8, name:"Israel",     cap:"Jerusalén",flag:"🇮🇱", iso:"ISR", lat:31.4, lon:35.0},
+  {n:9, name:"Japón",      cap:"Tokio",    flag:"🇯🇵", iso:"JPN", lat:36.5, lon:138.5},
+  {n:10,name:"Jordania",   cap:"Amán",     flag:"🇯🇴", iso:"JOR", lat:31.2, lon:36.6}
+];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('show');
+    setTimeout(()=>{ if(window.Plotly){ Plotly.Plots.resize('mapStudy'); Plotly.Plots.resize('mapGame'); } },60);
+  });
+});
+function goTab(name){document.querySelector('.tab[data-tab="'+name+'"]').click();}
+
+/* ---------- shared map config ---------- */
+function geoLayout(){
+  return {
+    margin:{l:0,r:0,t:0,b:0}, height:430, dragmode:false,
+    paper_bgcolor:'rgba(0,0,0,0)',
+    geo:{ scope:'asia', projection:{type:'mercator'},
+      showland:true, landcolor:'#f4ead9',
+      showocean:true, oceancolor:'#d7eef6',
+      showcountries:true, countrycolor:'#cdbfa9',
+      showcoastlines:true, coastlinecolor:'#cdbfa9',
+      showframe:false, bgcolor:'rgba(0,0,0,0)' }
+  };
+}
+function choroTrace(){
+  return { type:'choropleth', locationmode:'ISO-3',
+    locations:COUNTRIES.map(c=>c.iso), z:COUNTRIES.map(()=>1),
+    colorscale:[[0,'#bcd9f2'],[1,'#bcd9f2']], showscale:false,
+    marker:{line:{color:'#ffffff',width:1}}, hoverinfo:'skip' };
+}
+function pinTrace(showName){
+  return { type:'scattergeo', mode:'markers+text',
+    lon:COUNTRIES.map(c=>c.lon), lat:COUNTRIES.map(c=>c.lat),
+    text:COUNTRIES.map(c=>String(c.n)),
+    textfont:{color:'#ffffff', size:12, family:'Fredoka'},
+    marker:{size:24, color:COUNTRIES.map(()=> '#1f6fb2'), line:{color:'#fff',width:2}},
+    customdata:COUNTRIES.map((c,i)=>i),
+    hovertext:COUNTRIES.map(c=>c.name),
+    hoverinfo: showName ? 'text' : 'skip' };
+}
+const PCONF={responsive:true, displayModeBar:false, scrollZoom:false, doubleClick:false};
+
+/* ---------- MAPA estudio ---------- */
+function showInfo(i){
+  const c=COUNTRIES[i];
+  const info=document.getElementById('mapInfo');
+  info.classList.remove('empty');
+  info.innerHTML='<h3>'+c.flag+' '+c.name+'</h3><div class="cap">Capital: <b>'+c.cap+'</b></div>';
+  Plotly.restyle('mapStudy', {'marker.color':[COUNTRIES.map((x,k)=> k===i ? '#e07b00':'#1f6fb2')]}, [1]);
+}
+function initStudy(){
+  Plotly.newPlot('mapStudy', [choroTrace(), pinTrace(true)], geoLayout(), PCONF).then(gd=>{
+    gd.on('plotly_click', e=>{
+      const p=e.points[0]; let idx=-1;
+      if(p.data.type==='scattergeo' && p.customdata!==undefined) idx=p.customdata;
+      else if(p.location){ idx=COUNTRIES.findIndex(c=>c.iso===p.location); }
+      if(idx>=0) showInfo(idx);
+    });
+  });
+}
+
+/* ---------- Tarjetas ---------- */
+let fc=0;
+const flip=document.getElementById('flip');
+function renderFC(){
+  const c=COUNTRIES[fc];
+  fcFlag.textContent=c.flag; fcFlag2.textContent=c.flag;
+  fcName.textContent=c.name; fcBackName.textContent=c.name; fcCap.textContent=c.cap;
+  fcNow.textContent=fc+1; fcTotal.textContent=COUNTRIES.length;
+  fcBar.style.width=((fc+1)/COUNTRIES.length*100)+'%';
+  fcPrev.disabled=fc===0;
+  fcNext.textContent=fc===COUNTRIES.length-1?"¡Listo! 🎉":"Siguiente →";
+  flip.classList.remove('is-flipped');
+}
+flip.addEventListener('click',()=>flip.classList.toggle('is-flipped'));
+fcPrev.addEventListener('click',()=>{if(fc>0){fc--;renderFC();}});
+fcNext.addEventListener('click',()=>{if(fc<COUNTRIES.length-1){fc++;renderFC();}});
+fcShow.addEventListener('click',()=>{
+  goTab('mapa'); showInfo(fc);
+  document.getElementById('mapa').scrollIntoView({behavior:'smooth',block:'start'});
+});
+renderFC();
+
+/* ---------- Ubícalo (juego) ---------- */
+let order=[], gIdx=0, solved=0, firstTry=0, attemptedThis=false, gameGd=null, solvedSet={};
+function initGame(){
+  Plotly.newPlot('mapGame', [choroTrace(), pinTrace(false)], geoLayout(), PCONF).then(gd=>{
+    gameGd=gd;
+    gd.on('plotly_click', e=>{
+      const p=e.points[0]; let idx=-1;
+      if(p.data.type==='scattergeo' && p.customdata!==undefined) idx=p.customdata;
+      else if(p.location){ idx=COUNTRIES.findIndex(c=>c.iso===p.location); }
+      if(idx>=0) onPick(idx);
+    });
+    startGame();
+  });
+}
+function pinColors(){ return COUNTRIES.map((c,i)=> solvedSet[i] ? '#1d9b8a' : '#1f6fb2'); }
+function startGame(){
+  order=shuffle(COUNTRIES.map((_,i)=>i)); gIdx=0; solved=0; firstTry=0; solvedSet={};
+  gSolved.textContent='0'; gFirst.textContent='0';
+  Plotly.restyle('mapGame', {'marker.color':[pinColors()]}, [1]);
+  nextTarget(true);
+}
+function nextTarget(first){
+  attemptedThis=false;
+  if(gIdx>=order.length){ return finishGame(); }
+  gameTarget.textContent=COUNTRIES[order[gIdx]].name;
+  if(first){ gameFb.textContent="Toca el país que se te pide siguiendo su posición. 🔎"; gameFb.className="game-fb"; }
+}
+function onPick(i){
+  if(solvedSet[i]) return;
+  const target=order[gIdx];
+  if(i===target){
+    solvedSet[i]=true; solved++; if(!attemptedThis) firstTry++;
+    gSolved.textContent=solved; gFirst.textContent=firstTry;
+    Plotly.restyle('mapGame', {'marker.color':[pinColors()]}, [1]);
+    gameFb.textContent="¡Correcto! "+COUNTRIES[target].flag+" "+COUNTRIES[target].name+" — capital "+COUNTRIES[target].cap+". 🌟";
+    gameFb.className="game-fb good";
+    gIdx++; setTimeout(()=>nextTarget(false),850);
+  }else{
+    attemptedThis=true;
+    gameFb.textContent="Ese es "+COUNTRIES[i].name+". Inténtalo otra vez 💛";
+    gameFb.className="game-fb bad";
+  }
+}
+function finishGame(){
+  const pct=firstTry/COUNTRIES.length;
+  const stars=pct>=0.9?"⭐⭐⭐":pct>=0.6?"⭐⭐":"⭐";
+  const big=pct>=0.9?"🏆":pct>=0.6?"🎉":"🌱";
+  const msg=pct>=0.9?"¡Te sabes el mapa de Asia de memoria! Lista para el examen."
+        :pct>=0.6?"¡Muy bien! Repasa en el Mapa los que se te complicaron y vuelve a jugar."
+        :"¡Buen intento! Pasa por el Mapa y las Tarjetas para fijar las ubicaciones, y juega otra vez.";
+  document.getElementById('gameLive').innerHTML=
+    '<div class="result"><div class="big">'+big+'</div><div class="stars">'+stars+'</div>'+
+    '<h2>'+firstTry+' / '+COUNTRIES.length+' a la primera</h2><p>'+msg+'</p>'+
+    '<button class="nav-btn" id="gAgain">🔄 Jugar de nuevo</button></div>';
+  document.getElementById('gAgain').addEventListener('click',()=>{
+    document.getElementById('gameLive').innerHTML=gameTemplate;
+    rebindGameRefs(); initGame();
+  });
+}
+const gameTemplate=document.getElementById('gameLive').innerHTML;
+function rebindGameRefs(){ /* ids are re-created with same names */ }
+
+/* ---------- Quiz ---------- */
+function buildQuiz(){
+  const qs=[];
+  COUNTRIES.forEach(c=>{
+    const wrongCaps=shuffle(COUNTRIES.filter(x=>x!==c).map(x=>x.cap)).slice(0,3);
+    qs.push({q:"¿Cuál es la capital de "+c.name+"?", correct:c.cap, opts:shuffle([c.cap,...wrongCaps])});
+    const wrongCt=shuffle(COUNTRIES.filter(x=>x!==c).map(x=>x.name)).slice(0,3);
+    qs.push({q:"¿De qué país es capital "+c.cap+"?", correct:c.name, opts:shuffle([c.name,...wrongCt])});
+  });
+  return shuffle(qs);
+}
+let QQ=[], qi=0, score=0, answered=false, curCorrect=0;
+const cheers=["¡Excelente! 🌟","¡Muy bien! 💙","¡Correctísimo! 🎉","¡Lo dominas! 🔥","¡Genial! ✨"];
+function startQuiz(){ QQ=buildQuiz(); qi=0; score=0; renderQ(); }
+function renderQ(){
+  answered=false; const item=QQ[qi];
+  qNow.textContent=qi+1; qTotal.textContent=QQ.length; qText.textContent=item.q;
+  qScore.textContent=score; qFeedback.textContent=""; qFeedback.className="game-fb"; qFeedback.style.textAlign="left";
+  qNext.disabled=true; qNext.textContent=qi===QQ.length-1?"Ver resultado 🏁":"Siguiente →";
+  qOpts.innerHTML="";
+  curCorrect=item.opts.indexOf(item.correct);
+  item.opts.forEach((txt,idx)=>{
+    const b=document.createElement('button'); b.className="opt"; b.textContent=txt;
+    b.addEventListener('click',()=>chooseQ(idx,b,item.correct));
+    qOpts.appendChild(b);
+  });
+}
+function chooseQ(idx,btn,correctText){
+  if(answered)return; answered=true;
+  const opts=qOpts.querySelectorAll('button'); opts.forEach(o=>o.disabled=true);
+  if(idx===curCorrect){btn.style.background="#e4f7ec";btn.style.borderColor="var(--teal)";btn.style.color="#0e6b5c";
+    score++;qScore.textContent=score;qFeedback.textContent=cheers[Math.floor(Math.random()*cheers.length)];qFeedback.className="game-fb good";}
+  else{btn.style.background="#fde7e7";btn.style.borderColor="#d9534f";btn.style.color="#a32a26";
+    opts[curCorrect].style.background="#e4f7ec";opts[curCorrect].style.borderColor="var(--teal)";opts[curCorrect].style.color="#0e6b5c";
+    qFeedback.textContent="Casi 💛 La correcta era: "+correctText;qFeedback.className="game-fb bad";}
+  qFeedback.style.textAlign="left"; qNext.disabled=false;
+}
+qNext.addEventListener('click',()=>{if(qi<QQ.length-1){qi++;renderQ();}else{showQResult();}});
+function showQResult(){
+  const pct=score/QQ.length;
+  const stars=pct>=0.9?"⭐⭐⭐":pct>=0.6?"⭐⭐":pct>0?"⭐":"";
+  const big=pct>=0.9?"🏆":pct>=0.6?"🎉":"🌱";
+  const msg=pct>=0.9?"¡Nivel experta en capitales de Asia! 🤩"
+        :pct>=0.7?"¡Muy bien! Ya casi nivel experta; repasa lo que falló."
+        :pct>=0.5?"¡Vas bien! Vuelve a las Tarjetas y sube tu marca."
+        :"¡Buen intento! Repasa con calma las Tarjetas y el Mapa, y vuelve a intentarlo.";
+  quizLive.innerHTML='<div class="result"><div class="big">'+big+'</div><div class="stars">'+stars+'</div>'+
+    '<h2>'+score+' / '+QQ.length+'</h2><p>'+msg+'</p>'+
+    '<button class="nav-btn" id="qAgain">🔄 Intentar de nuevo</button></div>';
+  document.getElementById('qAgain').addEventListener('click',()=>{quizLive.innerHTML=quizTemplate;bindQ();startQuiz();});
+}
+const quizLive=document.getElementById('quizLive');
+const quizTemplate=quizLive.innerHTML;
+function bindQ(){document.getElementById('qNext').addEventListener('click',()=>{if(qi<QQ.length-1){qi++;renderQ();}else{showQResult();}});}
+startQuiz();
+
+/* ---------- init maps when Plotly is ready ---------- */
+function bootMaps(){
+  if(!window.Plotly){ return setTimeout(bootMaps,150); }
+  initStudy(); initGame();
+}
+bootMaps();
+</script>
